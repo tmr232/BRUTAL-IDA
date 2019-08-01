@@ -64,7 +64,7 @@ class BrutalIDA(idaapi.plugin_t):
         idaapi.error('bTree error: Brutal. Just like the good ol\' days!')
 
     def handle_6x(brutal_self):
-        idaapi.msg('Brutal. Just like the good ol\' days!\n')
+        pass
 
     def dispatch_brutality(brutal_self):
         {
@@ -73,6 +73,9 @@ class BrutalIDA(idaapi.plugin_t):
         }[brutal_self.brutal_action_handler.brutal_mode]()
 
     def init(brutal_self):
+        idaapi.unregister_action('Undo')
+        idaapi.unregister_action('Redo')
+
         brutal_self.brutal_action_handler = BrutalActionHandler()
         brutal_action_desc = idaapi.action_desc_t('BRUTAL', 'BRUTAL IDA', brutal_self.brutal_action_handler, '',
                                                   'IDA', BRUTAL6_ICON)
@@ -97,10 +100,7 @@ class BrutalIDA(idaapi.plugin_t):
 
         idaapi.attach_action_to_toolbar('BRUTAL IDA', 'BRUTAL')
 
-        brutal_self.brutal_hotkeys = [
-            idaapi.add_hotkey('Ctrl+Z', brutal_self.dispatch_brutality),
-            idaapi.add_hotkey('Ctrl+Shift+Z', brutal_self.dispatch_brutality),
-        ]
+        brutal_self.brutal_hotkey = idaapi.add_hotkey('Ctrl+Z', brutal_self.dispatch_brutality)
 
         return idaapi.PLUGIN_KEEP
 
